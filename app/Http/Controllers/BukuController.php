@@ -49,6 +49,17 @@ class BukuController extends Controller
         return view('buku.show', compact('buku'));
     }
 
+    public function cari(Request $request)
+    {
+        $judul = $request->query('judul', '');
+
+        
+        $bukus = \DB::select("SELECT * FROM buku WHERE judul = '" . $judul . "'");
+        // $bukus = \DB::select("SELECT * FROM buku WHERE judul = ?", [$judul]);
+
+        return view('buku.index', compact('bukus'));
+    }
+
     public function update(Request $request, $id)
     {
         // Validasi update termasuk batasan tahun terbit maksimal tahun sekarang
