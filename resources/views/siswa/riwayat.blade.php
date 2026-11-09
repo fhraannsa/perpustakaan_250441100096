@@ -27,14 +27,14 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @isset($peminjamans)
-                                @forelse($peminjamans as $index => $item)
+                            @isset($peminjaman)
+                                @forelse($peminjaman as $index => $item)
                                     <tr class="hover:bg-green-50">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
                                         
-                                        <!-- Menampilkan Judul Buku (Menggunakan Join dari Controller atau Fallback ke Model) -->
+                                       
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $item->judul_buku ?? (\App\Models\Buku::find($item->buku_id)->judul ?? 'Judul Buku Tidak Ditemukan') }}
+                                            {{ $item->buku->judul ?? $item->judul_buku ?? 'Judul Buku Tidak Ditemukan' }}
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -44,7 +44,7 @@
                                             {{ $item->tanggal_kembali ?? '-' }}
                                         </td>
                                         
-                                        <!-- Menampilkan Status -->
+                                        
                                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                             @php
                                                 $status = strtolower($item->status ?? 'dipinjam');

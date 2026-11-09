@@ -19,4 +19,9 @@ class Peminjaman extends Model
         'tanggal_kembali',
         'status',
     ];
+
+    public function buku()
+    {
+        return $this->belongsTo(Buku::class, 'buku_id');
+    }
 }

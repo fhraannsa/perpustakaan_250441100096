@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\Anggota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PeminjamanController extends Controller
 {
@@ -85,16 +86,14 @@ class PeminjamanController extends Controller
 
         return view('laporan.index', compact('peminjamans', 'totalPinjam', 'sedangDipinjam', 'sudahKembali'));
     }
-    
+
     public function show($id)
     {
-        // Ambil data peminjaman
         $peminjaman = Peminjaman::findOrFail($id);
-        
-        // AMBIL JUGA DATA BUKUNYA supaya variabel $buku di file view-mu gak kosong/error
-        $buku = \App\Models\Buku::find($peminjaman->buku_id);
 
-        // Arahkan ke folder buku.show (sesuai tempat file view kamu sekarang)
-        return view('buku.show', compact('buku', 'peminjaman'));
+        
+        Gate::authorize('show', $peminjaman);
+
+        return view('peminjaman.show', compact('peminjaman'));
     }
 }

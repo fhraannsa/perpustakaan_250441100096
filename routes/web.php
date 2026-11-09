@@ -19,8 +19,9 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
     Route::get('/siswa/buku', [BukuController::class, 'indexView'])->name('siswa.buku');
-    Route::get('/siswa/riwayat', [BukuController::class, 'riwayatPeminjaman'])->name('siswa.riwayat.alt');
+    Route::get('/siswa/riwayat/{id?}', [BukuController::class, 'riwayatPeminjaman'])->name('siswa.riwayat.alt');
     Route::get('/siswa/pinjam/{id}', [BukuController::class, 'pinjamSiswa'])->name('siswa.pinjam');
 });
 

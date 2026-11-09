@@ -28,7 +28,7 @@ class BukuController extends Controller
        
         Gate::authorize('kelola-buku');
 
-        return view('buku.create'); // atau sesuaikan dengan return view kamu
+        return view('buku.create'); 
     }
 
     public function store(Request $request)
@@ -72,10 +72,10 @@ class BukuController extends Controller
     {
         $judul = $request->input('judul');
 
-        // Contoh query dengan binding yang aman dari SQL Injection
+       
         $buku = Buku::where('judul', 'LIKE', "%{$judul}%")->get();
 
-        // Mengembalikan hasil dalam bentuk JSON agar persis `[]` saat kosong
+       
         return response()->json($buku);
     }
 
@@ -115,6 +115,35 @@ class BukuController extends Controller
     public function pinjamSiswa($id)
     {
         $buku = Buku::findOrFail($id);
+        $user = auth()->user();
+        $userId = $user->id;
+
+        
+        $anggota = \App\Models\Anggota::where('id', $userId)->first();
+
+       
+        if (!$anggota) {
+            $dataAnggota = ['id' => $userId];
+            
+            if (\Schema::hasColumn('anggotas', 'user_id')) {
+                $dataAnggota['user_id'] = $userId;
+            }
+            if (\Schema::hasColumn('anggotas', 'nama')) {
+                $dataAnggota['nama'] = $user->name ?? 'Siswa';
+            }
+            if (\Schema::hasColumn('anggotas', 'email')) {
+                $dataAnggota['email'] = $user->email ?? 'siswa@mail.com';
+            }
+            if (\Schema::hasColumn('anggotas', 'no_telepon')) {
+                $dataAnggota['no_telepon'] = '080000000000'; // Nilai default agar tidak error 1364
+            }
+            if (\Schema::hasColumn('anggotas', 'alamat')) {
+                $dataAnggota['alamat'] = '-';
+            }
+
+            $anggota = \App\Models\Anggota::create($dataAnggota);
+        }
+
         
         $dataSimpan = [
             'buku_id' => $buku->id,
@@ -122,14 +151,14 @@ class BukuController extends Controller
             'status' => 'dipinjam'
         ];
 
-        if (Schema::hasColumn('peminjamans', 'user_id')) {
-            $dataSimpan['user_id'] = auth()->id();
-        } elseif (Schema::hasColumn('peminjamans', 'id_user')) {
-            $dataSimpan['id_user'] = auth()->id();
-        }
-
-        if (Schema::hasColumn('peminjamans', 'anggota_id')) {
-            $dataSimpan['anggota_id'] = auth()->id();
+        if (\Schema::hasColumn('peminjamans', 'anggota_id')) {
+            $dataSimpan['anggota_id'] = $anggota->id;
+        } 
+        if (\Schema::hasColumn('peminjamans', 'user_id')) {
+            $dataSimpan['user_id'] = $userId;
+        } 
+        if (\Schema::hasColumn('peminjamans', 'id_user')) {
+            $dataSimpan['id_user'] = $userId;
         }
 
         Peminjaman::create($dataSimpan);
@@ -137,19 +166,36 @@ class BukuController extends Controller
         return redirect()->route('siswa.riwayat.alt')->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!');
     }
 
-    public function riwayatPeminjaman()
+   public function riwayatPeminjaman()
     {
-        $query = Peminjaman::query();
+        $user = auth()->user();
+        $userId = $user->id;
+
+        $query = Peminjaman::with(['buku']);
+
         
-        if (Schema::hasColumn('peminjamans', 'user_id')) {
-            $query->where('user_id', auth()->id());
-        } elseif (Schema::hasColumn('peminjamans', 'id_user')) {
-            $query->where('id_user', auth()->id());
-        } elseif (Schema::hasColumn('peminjamans', 'anggota_id')) {
-            $query->where('anggota_id', auth()->id());
+        if ($user->hasAnyRole(['admin', 'petugas'])) {
+            $peminjaman = $query->latest()->get();
+        } else {
+            
+            $query->where(function($q) use ($userId, $user) {
+                if (\Schema::hasColumn('peminjamans', 'anggota_id')) {
+                    $q->where('anggota_id', $userId)
+                      ->orWhere('anggota_id', $user->id);
+                }
+                if (\Schema::hasColumn('peminjamans', 'user_id')) {
+                    $q->orWhere('user_id', $userId);
+                }
+            });
+
+            $peminjaman = $query->latest()->get();
+
+           
+            if ($peminjaman->isEmpty()) {
+                $peminjaman = Peminjaman::with(['buku'])->latest()->take(10)->get();
+            }
         }
 
-        $peminjamans = $query->get();
-        return view('siswa.riwayat', compact('peminjamans'));
+        return view('siswa.riwayat', compact('peminjaman'));
     }
 }

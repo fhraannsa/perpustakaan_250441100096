@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Peminjaman;
+use App\Policies\PeminjamanPolicy;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,10 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Definisi Gate kelola-buku untuk admin dan petugas
+        Gate::policy(Peminjaman::class, PeminjamanPolicy::class);
         Gate::define('kelola-buku', function ($user) {
             return $user->hasRole(['admin', 'petugas']); 
-            // Catatan: sesuaikan method pengecekan role jika menggunakan Spatie (misal: $user->hasAnyRole(['admin', 'petugas']))
+            
         });
     }
 }
