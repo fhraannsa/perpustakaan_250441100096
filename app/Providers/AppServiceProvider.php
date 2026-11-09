@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Definisi Gate kelola-buku untuk admin dan petugas
+        Gate::define('kelola-buku', function ($user) {
+            return $user->hasRole(['admin', 'petugas']); 
+            // Catatan: sesuaikan method pengecekan role jika menggunakan Spatie (misal: $user->hasAnyRole(['admin', 'petugas']))
+        });
     }
 }

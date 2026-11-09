@@ -78,7 +78,7 @@
                                     <td class="px-6 py-4 text-center text-sm space-x-2">
                                         <a href="{{ route('buku.show', $buku->id) }}" class="text-blue-600 font-semibold">Detail</a>
                                         
-                                        @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('petugas') || auth()->user()->can('kelola data buku')))
+                                        @can('kelola-buku')
                                             <button type="button" onclick="pilihUbah({{ $buku->id }}, '{{ $buku->kategori_id }}', '{{ addslashes($buku->judul) }}', '{{ addslashes($buku->penulis) }}', {{ $buku->tahun_terbit }})" class="text-green-600 font-semibold hover:text-green-900">Ubah</button>
                                             
                                             <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="inline">
@@ -86,7 +86,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin ingin menghapus data buku ini?')" class="text-red-600 font-semibold hover:text-red-900">Hapus</button>
                                             </form>
-                                        @endif
+                                        @endcan
 
                                         @role('siswa')
                                             <a href="{{ url('/siswa/pinjam/' . $buku->id) }}" onclick="return confirm('Yakin ingin meminjam buku ini?')" class="text-green-600 font-semibold">Pinjam Buku</a>

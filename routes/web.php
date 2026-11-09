@@ -51,15 +51,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
     Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');
-    Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
-    Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
-    Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
-    Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
+     Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
     Route::get('/buku/{id}', [BukuController::class, 'show'])->name('buku.show');
 
-});
-
-Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
-
+    Route::middleware(['can:kelola-buku'])->group(function () { 
+        Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
+        Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
+        Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
+        Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
+    });
+ });
 
 require __DIR__.'/auth.php';

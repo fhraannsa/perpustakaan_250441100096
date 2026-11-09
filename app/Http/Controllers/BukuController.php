@@ -7,6 +7,7 @@ use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Gate;
 
 class BukuController extends Controller
 {
@@ -22,9 +23,18 @@ class BukuController extends Controller
         return view('buku.index', compact('bukus'));
     }
 
+    public function create()
+    {
+       
+        Gate::authorize('kelola-buku');
+
+        return view('buku.create'); // atau sesuaikan dengan return view kamu
+    }
+
     public function store(Request $request)
     {
-        
+        Gate::authorize('kelola-buku');
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
@@ -44,6 +54,14 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('success', 'Data buku berhasil disimpan!');
     }
 
+    public function edit($id)
+    {
+        Gate::authorize('kelola-buku');
+
+        $buku = Buku::findOrFail($id);
+        return view('buku.edit', compact('buku'));
+    }
+
     public function show($id)
     {
         $buku = Buku::findOrFail($id);
@@ -60,10 +78,11 @@ class BukuController extends Controller
         // Mengembalikan hasil dalam bentuk JSON agar persis `[]` saat kosong
         return response()->json($buku);
     }
-    
+
     public function update(Request $request, $id)
     {
-        // Validasi update termasuk batasan tahun terbit maksimal tahun sekarang
+        Gate::authorize('kelola-buku');
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
@@ -85,6 +104,8 @@ class BukuController extends Controller
 
     public function destroy($id)
     {
+        Gate::authorize('kelola-buku');
+
         $buku = Buku::findOrFail($id);
         $buku->delete();
 
