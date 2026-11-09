@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class PeminjamanController extends Controller
 {
-    // 1. SISWA: Mengajukan Peminjaman Buku (Data Asli User Login)
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -17,13 +17,13 @@ class PeminjamanController extends Controller
 
         $user = auth()->user();
 
-        // Cari atau Buat Anggota baru DENGAN DATA USER YANG SEDANG LOGIN
+        
         $anggota = Anggota::firstOrCreate(
             ['nama' => $user->name],
             [
                 'nama'       => $user->name,
                 'email'      => $user->email,
-                'no_telepon' => '08123456789' // Nilai default agar tidak error NULL
+                'no_telepon' => '08123456789'
             ]
         );
 
@@ -37,19 +37,19 @@ class PeminjamanController extends Controller
         return redirect()->route('peminjaman.riwayat')->with('success', 'Berhasil melakukan peminjaman buku!');
     }
 
-    // 3. PETUGAS & ADMIN: Melihat Semua Transaksi Peminjaman Asli
+    
     public function index()
     {
         $peminjamans = Peminjaman::with(['anggota', 'buku'])->latest()->get();
         return view('peminjaman.index', compact('peminjamans'));
     }
 
-    // 2. SISWA: Melihat Riwayat Peminjaman Pribadi
+    
     public function riwayat()
     {
         $user = auth()->user();
         
-        // Cari Anggota berdasarkan nama user login
+       
         $anggota = Anggota::where('nama', $user->name)->first();
         $anggotaId = $anggota ? $anggota->id : 0;
 
@@ -61,7 +61,7 @@ class PeminjamanController extends Controller
         return view('peminjaman.riwayat', compact('peminjamans'));
     }
 
-    // 4. PETUGAS & ADMIN: Menyetujui Pengembalian Buku
+    
     public function updateStatus(Request $request, $id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
@@ -72,17 +72,29 @@ class PeminjamanController extends Controller
         return back()->with('success', 'Buku telah berhasil dikembalikan!');
     }
 
-    // PETUGAS & ADMIN: Menampilkan Rekap Laporan Peminjaman
+   
     public function laporan()
     {
-        // Mengambil semua data peminjaman beserta relasi anggota dan bukunya
+        
         $peminjamans = Peminjaman::with(['anggota', 'buku'])->latest()->get();
 
-        // Menghitung ringkasan statistik
+       
         $totalPinjam = $peminjamans->count();
         $sedangDipinjam = $peminjamans->whereNull('tanggal_kembali')->count();
         $sudahKembali = $peminjamans->whereNotNull('tanggal_kembali')->count();
 
         return view('laporan.index', compact('peminjamans', 'totalPinjam', 'sedangDipinjam', 'sudahKembali'));
+    }
+    
+    public function show($id)
+    {
+        // Ambil data peminjaman
+        $peminjaman = Peminjaman::findOrFail($id);
+        
+        // AMBIL JUGA DATA BUKUNYA supaya variabel $buku di file view-mu gak kosong/error
+        $buku = \App\Models\Buku::find($peminjaman->buku_id);
+
+        // Arahkan ke folder buku.show (sesuai tempat file view kamu sekarang)
+        return view('buku.show', compact('buku', 'peminjaman'));
     }
 }

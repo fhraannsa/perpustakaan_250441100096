@@ -72,7 +72,7 @@
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
                                     <td class="px-6 py-4 text-sm text-gray-900">{{ $buku->kategori_id }}</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{!! $buku->judul !!}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
                                     <td class="px-6 py-4 text-center text-sm space-x-2">

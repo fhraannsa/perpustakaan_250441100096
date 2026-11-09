@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Buku;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class BukuController extends Controller
@@ -23,7 +24,7 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input termasuk tahun terbit maksimal tahun sekarang (2026)
+        
         $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
@@ -51,15 +52,15 @@ class BukuController extends Controller
 
     public function cari(Request $request)
     {
-        $judul = $request->query('judul', '');
+        $judul = $request->input('judul');
 
-        
-        $bukus = \DB::select("SELECT * FROM buku WHERE judul = '" . $judul . "'");
-        // $bukus = \DB::select("SELECT * FROM buku WHERE judul = ?", [$judul]);
+        // Contoh query dengan binding yang aman dari SQL Injection
+        $buku = Buku::where('judul', 'LIKE', "%{$judul}%")->get();
 
-        return view('buku.index', compact('bukus'));
+        // Mengembalikan hasil dalam bentuk JSON agar persis `[]` saat kosong
+        return response()->json($buku);
     }
-
+    
     public function update(Request $request, $id)
     {
         // Validasi update termasuk batasan tahun terbit maksimal tahun sekarang
