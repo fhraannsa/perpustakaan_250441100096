@@ -21,7 +21,7 @@
             @endif
 
             <!-- Form Data Buku -->
-            @hasanyrole('admin|petugas')
+            @can('kelola-buku')
             <div class="bg-green-100/70 p-6 rounded-lg shadow-sm border border-green-300">
                 <h3 class="text-lg font-semibold text-green-900 mb-4" id="form-title">Form Data Buku</h3>
                 
@@ -52,7 +52,7 @@
                     </div>
                 </form>
             </div>
-            @endhasanyrole
+            @endcan
 
             <!-- Daftar Buku -->
             <div class="bg-green-100/70 shadow-sm rounded-lg overflow-hidden border border-green-300 p-4">
@@ -72,7 +72,7 @@
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
                                     <td class="px-6 py-4 text-sm text-gray-900">{{ $buku->kategori_id }}</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{!! $buku->judul !!}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
                                     <td class="px-6 py-4 text-center text-sm space-x-2">

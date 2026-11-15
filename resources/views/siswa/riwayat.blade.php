@@ -27,45 +27,32 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @isset($peminjaman)
-                                @forelse($peminjaman as $index => $item)
-                                    <tr class="hover:bg-green-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
-                                        
-                                       
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $item->buku->judul ?? $item->judul_buku ?? 'Judul Buku Tidak Ditemukan' }}
-                                        </td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $item->tanggal_pinjam ?? '-' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $item->tanggal_kembali ?? '-' }}
-                                        </td>
-                                        
-                                        
-                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                            @php
-                                                $status = strtolower($item->status ?? 'dipinjam');
-                                                $statusColor = match($status) {
-                                                    'selesai', 'dikembalikan' => 'bg-green-100 text-green-800',
-                                                    'dipinjam' => 'bg-yellow-100 text-yellow-800',
-                                                    default => 'bg-blue-100 text-blue-800'
-                                                };
-                                            @endphp
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
-                                                {{ ucfirst($status) }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada riwayat peminjaman buku.</td>
-                                    </tr>
-                                @endforelse
-                            @endisset
-                        </tbody>
+    @forelse($peminjaman as $index => $item)
+        <tr class="hover:bg-green-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {{ $item->buku->judul ?? 'Judul Buku Tidak Ditemukan' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ $item->tanggal_pinjam ?? '-' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ $item->tanggal_kembali ?? '-' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    {{ ucfirst($item->status ?? 'dipinjam') }}
+                </span>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                Tidak ada buku yang dipinjam.
+            </td>
+        </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>

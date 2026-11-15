@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     
-    Route::middleware([RoleMiddleware::using('admin|petugas')])->group(function () {
+    Route::middleware(['role:admin|petugas'])->group(function () {
         Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users');
         Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
         Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
@@ -59,8 +59,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
         Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
         Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
+
+        // Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
         Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
     });
- });
+});
+
+     Route::get('/test-exception', function () {
+            throw new \RuntimeException('Test exception handling');
+            });
 
 require __DIR__.'/auth.php';

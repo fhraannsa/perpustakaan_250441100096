@@ -26,8 +26,7 @@ class PeminjamanPolicy
         return true;
         }
 
-        // 2. Jika siswa, pastikan ID user yang login cocok dengan pemilik peminjaman (anggota_id atau user_id)
-        // Sesuaikan 'anggota_id' atau 'user_id' dengan kolom yang ada di tabel peminjamans milikmu
+        
         return $peminjaman->anggota_id === $user->id;
     }
     /**

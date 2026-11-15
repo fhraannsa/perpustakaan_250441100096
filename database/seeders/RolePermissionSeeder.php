@@ -40,7 +40,7 @@ class RolePermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // 2. Buat Roles dan Assign Permissions sesuai ketentuan soal
+        
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $petugasRole = Role::firstOrCreate(['name' => 'petugas']);
         $siswaRole = Role::firstOrCreate(['name' => 'siswa']);
@@ -88,10 +88,10 @@ class RolePermissionSeeder extends Seeder
             'Ubah profil sendiri',
         ]);
 
-        // 3. Buat Akun Dummy untuk Pengujian (Admin, Petugas, Siswa)
-        $admin = User::firstOrCreate(
+        
+        $admin = User::updateOrCreate(
             ['email' => 'admin@perpus.com'],
-            ['name' => 'Administrator', 'password' => Hash::make('12345678')]
+            ['name' => 'Administrator', 'password' => Hash::make('admin1234')]
         );
         $admin->assignRole($adminRole);
 
@@ -101,10 +101,10 @@ class RolePermissionSeeder extends Seeder
         );
         $petugas->assignRole($petugasRole);
 
-        $siswa = User::UpdateOrCreate(
+        $siswa = User::firstOrCreate(
             ['email' => 'siswa@perpus.com'],
             ['name' => 'Siswa Teladan', 'password' => Hash::make('siswa123')]
         );
         $siswa->assignRole($siswaRole);
-    }
+    }   
 }
