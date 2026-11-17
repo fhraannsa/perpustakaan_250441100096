@@ -31,10 +31,28 @@ class AdminController extends Controller
     {
         $peminjamans = \Illuminate\Support\Facades\DB::table('peminjamans')
             ->leftJoin('buku', 'peminjamans.buku_id', '=', 'buku.id')
-            ->leftJoin('users', 'peminjamans.anggota_id', '=', 'users.id')
-            ->select('peminjamans.*', 'buku.judul as judul_buku', 'users.name as nama_peminjam')
+            ->select('peminjamans.*', 'buku.judul as judul_buku')
             ->latest('peminjamans.id')
             ->get();
+
+        foreach ($peminjamans as $item) {
+            
+            $anggota = \Illuminate\Support\Facades\DB::table('anggotas')
+                ->where('user_id', $item->anggota_id)
+                ->orWhere('id', $item->anggota_id)
+                ->first();
+
+            if ($anggota) {
+                $item->nama_peminjam = $anggota->nama;
+            } else {
+                
+                $user = \Illuminate\Support\Facades\DB::table('users')
+                    ->where('id', $item->anggota_id)
+                    ->first();
+                
+                $item->nama_peminjam = $user ? $user->name : 'ID ' . $item->anggota_id . ' (Tidak Ditemukan)';
+            }
+        }
 
         return view('admin.laporan', compact('peminjamans'));
     }

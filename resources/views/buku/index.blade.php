@@ -24,8 +24,7 @@
             @can('kelola-buku')
             <div class="bg-green-100/70 p-6 rounded-lg shadow-sm border border-green-300">
                 <h3 class="text-lg font-semibold text-green-900 mb-4" id="form-title">Form Data Buku</h3>
-                
-                <form action="/buku" method="POST" id="form-buku">
+                <form action="{{ route('buku.store') }}" method="POST" id="form-buku">
                     @csrf
                     <div id="method-container"></div>
 
@@ -72,7 +71,7 @@
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
                                     <td class="px-6 py-4 text-sm text-gray-900">{{ $buku->kategori_id }}</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{!! $buku->judul !!}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
                                     <td class="px-6 py-4 text-center text-sm space-x-2">
@@ -84,8 +83,8 @@
                                             <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Yakin ingin menghapus data buku ini?')" class="text-red-600 font-semibold hover:text-red-900">Hapus</button>
-                                            </form>
+                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus data buku ini?')" class="text-red-600 font-semibold hover:text-red-900">Hapus</button>
+                                        </form>
                                         @endcan
 
                                         @role('siswa')
@@ -127,7 +126,7 @@
         }
 
         function resetForm() {
-            document.getElementById('form-buku').action = "/buku";
+            document.getElementById('form-buku').action = "{{ route('buku.store') }}";
             document.getElementById('method-container').innerHTML = '';
             document.getElementById('form-buku').reset();
 

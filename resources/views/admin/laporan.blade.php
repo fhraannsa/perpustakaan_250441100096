@@ -58,7 +58,7 @@
                                         
                                         <!-- Nama Peminjam -->
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $item->nama_peminjam ?? 'User Tidak Ditemukan' }}
+                                         {{ $item->nama_peminjam }}
                                         </td>
                                         
                                         <!-- Judul Buku -->

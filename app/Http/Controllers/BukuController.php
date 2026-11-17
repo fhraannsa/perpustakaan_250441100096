@@ -36,13 +36,15 @@ class BukuController extends Controller
     {
         Gate::authorize('kelola-buku');
 
+        
         $request->validate([
             'judul' => 'required|string|min:3|max:255',
             'penulis' => 'required|string|max:255',
-            'tahun_terbit' => 'required|numeric|digits:4|max:' . date('Y'),
+            'tahun_terbit' => 'required|numeric|digits:4',
             'kategori_id' => 'required',
         ]);
 
+        
         Buku::create([
             'kategori_id' => $request->kategori_id,
             'judul' => $request->judul,
@@ -73,11 +75,12 @@ class BukuController extends Controller
     {
         $judul = $request->input('judul');
 
-       
+        
         $buku = Buku::where('judul', 'LIKE', "%{$judul}%")->get();
-
+        // $bukus = DB::select("SELECT * FROM buku WHERE judul LIKE '%" . $judul . "%'");
        
         return response()->json($buku);
+        // return view('buku.index', compact('bukus'));
     }
 
     public function update(Request $request, $id)

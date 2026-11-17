@@ -15,7 +15,7 @@
                         Dashboard
                     </a>
                     
-                    <a href="{{ route('buku.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('buku.index') ? 'border-green-600 text-green-600 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                    <a href="{{ url('/buku') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('buku*') ? 'border-green-600 text-green-600 font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
                         Daftar Buku
                     </a>
 

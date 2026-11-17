@@ -57,10 +57,12 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['can:kelola-buku'])->group(function () { 
         Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
+        // A3 no 1
+        // Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
         Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
         Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
 
-        // Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
+        // A3 no 2
         Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
     });
 });
