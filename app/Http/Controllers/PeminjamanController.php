@@ -7,6 +7,7 @@ use App\Models\Buku;
 use App\Models\Anggota;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
@@ -19,28 +20,29 @@ class PeminjamanController extends Controller
 
         $user = auth()->user();
 
-        // 1. Ambil data anggota yang PUNYA user_id persis dengan user yang login saat ini
-        $anggota = Anggota::where('user_id', $user->id)->first();
+        try {
+            // Gunakan firstOrCreate untuk menghindari duplikasi transaksi stateful di Supabase pooler
+            $anggota = Anggota::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nama'       => $user->name ?? 'User',
+                    'email'      => $user->email,
+                    'no_telepon' => '-'
+                ]
+            );
 
-        // 2. Jika akun ini belum punya data anggota, buatkan secara spesifik
-        if (!$anggota) {
-            $anggota = Anggota::create([
-                'user_id'    => $user->id,
-                'nama'       => $user->name,
-                'email'      => $user->email,
-                'no_telepon' => '-'
+            // Masukkan data peminjaman
+            Peminjaman::create([
+                'anggota_id'      => $anggota->id,
+                'buku_id'         => $request->buku_id,
+                'tanggal_pinjam'  => now()->toDateString(),
+                'tanggal_kembali' => null,
             ]);
+
+            return redirect()->route('peminjaman.riwayat')->with('success', 'Berhasil melakukan peminjaman buku!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal meminjam buku: ' . $e->getMessage()]);
         }
-
-        // 3. Masukkan data peminjaman dengan MEMASTIKAN 'anggota_id' murni milik si $anggota yang login
-        Peminjaman::create([
-            'anggota_id'      => $anggota->id, // <-- Kunci utamanya di sini!
-            'buku_id'         => $request->buku_id,
-            'tanggal_pinjam'  => now()->toDateString(),
-            'tanggal_kembali' => null,
-        ]);
-
-        return redirect()->route('peminjaman.riwayat')->with('success', 'Berhasil melakukan peminjaman buku!');
     }
 
     public function index()
@@ -54,14 +56,11 @@ class PeminjamanController extends Controller
     {
         $user = auth()->user();
         
-        // 1. Cari data anggota yang persis terikat ke user_id yang sedang login
         $anggota = Anggota::where('user_id', $user->id)->first();
 
-        // 2. Jika akun ini belum punya profil anggota, return kosong
         if (!$anggota) {
             $peminjamans = collect();
         } else {
-            // 3. AMBIL PEMINJAMAN HANYA MILIK ID ANGGOTA INI (PENTING!)
             $peminjamans = Peminjaman::with('buku')
                 ->where('anggota_id', $anggota->id)
                 ->latest()
@@ -84,10 +83,8 @@ class PeminjamanController extends Controller
    
     public function laporan()
     {
-        
         $peminjamans = Peminjaman::with(['anggota', 'buku'])->latest()->get();
 
-       
         $totalPinjam = $peminjamans->count();
         $sedangDipinjam = $peminjamans->whereNull('tanggal_kembali')->count();
         $sudahKembali = $peminjamans->whereNotNull('tanggal_kembali')->count();
@@ -95,24 +92,9 @@ class PeminjamanController extends Controller
         return view('laporan.index', compact('peminjamans', 'totalPinjam', 'sedangDipinjam', 'sudahKembali'));
     }
 
-    // A4 no 1
     public function show($id)
     {
-        
         $buku = Buku::findOrFail($id);
-
-        
         return view('buku.show', compact('buku'));
     }
-
-    // A4 no selanjutnya
-    // public function show($id)
-    // {
-    //     $peminjaman = Peminjaman::findOrFail($id);
-
-        
-    //     Gate::authorize('show', $peminjaman);
-
-    //     return view('peminjaman.show', compact('peminjaman'));
-    // }
 }
