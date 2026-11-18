@@ -1,7 +1,7 @@
-/node_modules
 .env
+.env.local
 .env.production
-.env.*
+/vendor
+/node_modules
+/tests
 .git
-.gitignore
-README.md
