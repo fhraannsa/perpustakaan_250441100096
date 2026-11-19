@@ -59,4 +59,66 @@
 
         </div>
     </div>
+
+    {{-- Modal Detail Peminjaman Siswa --}}
+    <div id="modalDetailSiswa" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full overflow-hidden border border-green-200">
+            <div class="bg-green-100 border-b border-green-200 px-6 py-4 flex items-center justify-between">
+                <h4 class="text-lg font-bold text-green-900">Detail Peminjaman Buku</h4>
+                <button type="button" onclick="tutupDetailSiswa()" class="text-green-900 hover:text-red-600 font-bold text-lg">&times;</button>
+            </div>
+            <div class="p-6 space-y-3 text-sm text-gray-700">
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-500">ID Transaksi</span>
+                    <span id="siswaDetailId" class="font-medium text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-500">Judul Buku</span>
+                    <span id="siswaDetailBuku" class="font-semibold text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-500">Penulis</span>
+                    <span id="siswaDetailPenulis" class="font-medium text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-500">Tanggal Pinjam</span>
+                    <span id="siswaDetailTglPinjam" class="font-medium text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-500">Tanggal Kembali</span>
+                    <span id="siswaDetailTglKembali" class="font-medium text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-500">Status</span>
+                    <span id="siswaDetailStatus" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">-</span>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-3 flex justify-end border-t">
+                <button type="button" onclick="tutupDetailSiswa()" class="bg-gray-700 hover:bg-gray-800 text-white text-xs px-4 py-2 rounded font-semibold">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bukaDetailSiswa(btn) {
+            document.getElementById('siswaDetailId').textContent = '#' + btn.dataset.id;
+            document.getElementById('siswaDetailBuku').textContent = btn.dataset.buku;
+            document.getElementById('siswaDetailPenulis').textContent = btn.dataset.penulis;
+            document.getElementById('siswaDetailTglPinjam').textContent = btn.dataset.tglPinjam;
+            document.getElementById('siswaDetailTglKembali').textContent = btn.dataset.tglKembali;
+            document.getElementById('siswaDetailStatus').textContent = btn.dataset.status;
+
+            const modal = document.getElementById('modalDetailSiswa');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupDetailSiswa() {
+            const modal = document.getElementById('modalDetailSiswa');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 </x-app-layout>

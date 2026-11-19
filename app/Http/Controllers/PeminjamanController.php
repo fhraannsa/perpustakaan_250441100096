@@ -94,7 +94,16 @@ class PeminjamanController extends Controller
 
     public function show($id)
     {
-        $buku = Buku::findOrFail($id);
-        return view('buku.show', compact('buku'));
+        $peminjaman = Peminjaman::with(['anggota', 'buku'])->findOrFail($id);
+
+        $user = auth()->user();
+        if ($user && method_exists($user, 'hasRole') && $user->hasRole('siswa')) {
+            $anggota = Anggota::where('user_id', $user->id)->first();
+            if (!$anggota || $peminjaman->anggota_id !== $anggota->id) {
+                abort(403, 'Anda tidak berhak mengakses detail peminjaman ini.');
+            }
+        }
+
+        return view('peminjaman.show', compact('peminjaman'));
     }
 }

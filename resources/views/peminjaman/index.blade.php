@@ -116,4 +116,28 @@
 
         </div>
     </div>
+
+    <script>
+        function bukaDetailPeminjaman(btn) {
+            document.getElementById('detailId').textContent = '#' + btn.dataset.id;
+            document.getElementById('detailAnggotaId').textContent = btn.dataset.anggotaId;
+            document.getElementById('detailPeminjam').textContent = btn.dataset.peminjam;
+            document.getElementById('detailEmail').textContent = btn.dataset.email;
+            document.getElementById('detailBuku').textContent = btn.dataset.buku;
+            document.getElementById('detailPenulis').textContent = btn.dataset.penulis;
+            document.getElementById('detailTglPinjam').textContent = btn.dataset.tglPinjam;
+            document.getElementById('detailTglKembali').textContent = btn.dataset.tglKembali;
+            document.getElementById('detailStatus').textContent = btn.dataset.status;
+
+            const modal = document.getElementById('modalDetailPeminjaman');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupDetailPeminjaman() {
+            const modal = document.getElementById('modalDetailPeminjaman');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 </x-app-layout>
