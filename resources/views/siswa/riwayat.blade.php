@@ -24,35 +24,60 @@
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-green-900 uppercase tracking-wider">Tanggal Pinjam</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-green-900 uppercase tracking-wider">Tanggal Kembali</th>
                                 <th class="px-6 py-3 text-center text-xs font-semibold text-green-900 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-green-900 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-    @forelse($peminjaman as $index => $item)
-        <tr class="hover:bg-green-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ $item->buku->judul ?? 'Judul Buku Tidak Ditemukan' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ $item->tanggal_pinjam ?? '-' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ $item->tanggal_kembali ?? '-' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                    {{ ucfirst($item->status ?? 'dipinjam') }}
-                </span>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                Tidak ada buku yang dipinjam.
-            </td>
-        </tr>
-    @endforelse
-</tbody>
+                            @forelse($peminjaman as $index => $item)
+                                @php
+                                    $buku = $item->buku ?? \App\Models\Buku::find($item->buku_id);
+                                    $judulBuku = $buku->judul ?? 'Judul Buku Tidak Ditemukan';
+                                    $penulisBuku = $buku->penulis ?? '-';
+                                    $status = strtolower($item->status ?? (is_null($item->tanggal_kembali) ? 'dipinjam' : 'dikembalikan'));
+                                    $statusColor = match($status) {
+                                        'selesai', 'dikembalikan' => 'bg-green-100 text-green-800',
+                                        'dipinjam' => 'bg-yellow-100 text-yellow-800',
+                                        default => 'bg-blue-100 text-blue-800'
+                                    };
+                                @endphp
+                                <tr class="hover:bg-green-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $judulBuku }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $item->tanggal_pinjam ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $item->tanggal_kembali ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
+                                            {{ ucfirst($status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button type="button"
+                                            onclick="bukaDetailSiswa(this)"
+                                            data-id="{{ $item->id }}"
+                                            data-buku="{{ $judulBuku }}"
+                                            data-penulis="{{ $penulisBuku }}"
+                                            data-tgl-pinjam="{{ $item->tanggal_pinjam ?? '-' }}"
+                                            data-tgl-kembali="{{ $item->tanggal_kembali ?? '-' }}"
+                                            data-status="{{ ucfirst($status) }}"
+                                            class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded font-semibold shadow-sm transition">
+                                            Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                        Tidak ada buku yang dipinjam.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
                     </table>
                 </div>
             </div>
