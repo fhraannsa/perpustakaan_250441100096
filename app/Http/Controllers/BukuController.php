@@ -38,10 +38,10 @@ class BukuController extends Controller
 
         
         $request->validate([
-            'judul' => 'required|string|min:3|max:255',
+            'judul' => 'required|string|min:1|max:255',
             'penulis' => 'required|string|max:255',
             'tahun_terbit' => 'required|numeric|digits:4',
-            'kategori_id' => 'required',
+            'kategori_id' =>'required|string|max:100',
         ]);
 
         

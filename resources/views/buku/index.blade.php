@@ -29,8 +29,18 @@
                     <div id="method-container"></div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kategori ID:</label>
-                        <input type="text" name="kategori_id" id="input-kategori" class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white" required>
+                        <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">
+                            Kategori:
+                        </label>
+                        <input
+                            type="text"
+                            id="kategori"
+                            name="kategori"
+                            value="{{ old('kategori', $buku->kategori ?? '') }}"
+                            placeholder="Masukkan kategori buku"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        >
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Judul Buku:</label>
@@ -70,7 +80,7 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
-                                    <td class="px-6 py-4 text-sm text-gray-900">{{ $buku->kategori_id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $buku->kategori ?? '-' }} </td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
