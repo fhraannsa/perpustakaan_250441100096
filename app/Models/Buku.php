@@ -27,14 +27,8 @@ class Buku extends Model
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
-   
-    public function getKategoriAttribute()
-    {
-        return $this->kategori()->first()->nama ?? 'Umum';
-    }
-
     public function peminjaman()
     {
-    return $this->hasMany(Peminjaman::class); // atau sesuaikan dengan nama model relasinya
+        return $this->hasMany(Peminjaman::class); // atau sesuaikan dengan nama model relasinya
     }
 }
