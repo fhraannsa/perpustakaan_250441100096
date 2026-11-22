@@ -100,18 +100,30 @@ class BukuController extends Controller
         Gate::authorize('kelola-buku');
 
         $request->validate([
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
+            'judul'        => 'required|string|max:255',
+            'penulis'      => 'required|string|max:255',
             'tahun_terbit' => 'required|numeric|digits:4|max:' . date('Y'),
-            'kategori_id' => 'required',
+            'kategori_id'  => 'required|string|max:100',
         ]);
 
         $buku = Buku::findOrFail($id);
-        
+
+        $inputKategori = trim($request->kategori_id);
+
+        $kategori = is_numeric($inputKategori)
+            ? Kategori::find($inputKategori)
+            : Kategori::whereRaw('LOWER(nama) = ?', [mb_strtolower($inputKategori)])->first();
+
+        if (!$kategori) {
+            $kategori = Kategori::create([
+                'nama' => $inputKategori,
+            ]);
+        }
+
         $buku->update([
-            'kategori_id' => $request->kategori_id,
-            'judul' => $request->judul,
-            'penulis' => $request->penulis,
+            'kategori_id'  => $kategori->id,
+            'judul'        => $request->judul,
+            'penulis'      => $request->penulis,
             'tahun_terbit' => $request->tahun_terbit,
         ]);
 
