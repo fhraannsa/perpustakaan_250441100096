@@ -88,7 +88,7 @@
                                         <a href="{{ route('buku.show', $buku->id) }}" class="text-blue-600 font-semibold">Detail</a>
                                         
                                         @can('kelola-buku')
-                                            <button type="button" onclick="pilihUbah({{ $buku->id }}, '{{ $buku->kategori_id }}', '{{ addslashes($buku->judul) }}', '{{ addslashes($buku->penulis) }}', {{ $buku->tahun_terbit }})" class="text-green-600 font-semibold hover:text-green-900">Ubah</button>
+                                            <button type="button" onclick="pilihUbah({{ $buku->id }}, '{{ addslashes($buku->kategori->nama ?? $buku->kategori_id) }}', '{{ addslashes($buku->judul) }}', '{{ addslashes($buku->penulis) }}', {{ $buku->tahun_terbit }})" class="text-green-600 font-semibold hover:text-green-900">Ubah</button>
                                             
                                             <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="inline">
                                                 @csrf
