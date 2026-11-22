@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use App\Models\Kategori;
 use App\Models\Peminjaman;
 use App\Models\Anggota;
 use Illuminate\Http\Request;
@@ -37,21 +38,32 @@ class BukuController extends Controller
         Gate::authorize('kelola-buku');
 
         
-        $request->validate([
-            'judul' => 'required|string|min:1|max:255',
-            'penulis' => 'required|string|max:255',
+            $request->validate([
+            'judul'        => 'required|string|min:1|max:255',
+            'penulis'      => 'required|string|max:255',
             'tahun_terbit' => 'required|numeric|digits:4',
-            'kategori_id' =>'required|string|max:100',
+            'kategori_id'  => 'required|string|max:100',
         ]);
 
-        
+        $inputKategori = trim($request->kategori_id);
+
+        $kategori = is_numeric($inputKategori)
+            ? Kategori::find($inputKategori)
+            : Kategori::whereRaw('LOWER(nama) = ?', [mb_strtolower($inputKategori)])->first();
+
+        if (!$kategori) {
+            $kategori = Kategori::create([
+                'nama' => $inputKategori,
+            ]);
+        }
+
         Buku::create([
-            'kategori_id' => $request->kategori_id,
-            'judul' => $request->judul,
-            'penulis' => $request->penulis,
+            'kategori_id'  => $kategori->id,
+            'judul'        => $request->judul,
+            'penulis'      => $request->penulis,
             'tahun_terbit' => $request->tahun_terbit,
-            'kode_buku' => 'BK-' . rand(1000, 9999),
-            'gambar' => 'default.jpg',
+            'kode_buku'    => 'BK-' . rand(1000, 9999),
+            'gambar'       => 'default.jpg',
         ]);
 
         return redirect()->route('buku.index')->with('success', 'Data buku berhasil disimpan!');
