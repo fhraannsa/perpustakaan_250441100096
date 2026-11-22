@@ -29,29 +29,29 @@
                     <div id="method-container"></div>
 
                     <div class="mb-4">
-                        <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">
                             Kategori:
                         </label>
                         <input
                             type="text"
                             id="kategori_id"
                             name="kategori_id"
-                            value="{{ old('kategori', $buku->kategori ?? '') }}"
+                            value="{{ old('kategori_id') }}"
                             placeholder="Masukkan kategori buku"
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white"
                             required
                         >
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Judul Buku:</label>
+                        <label for="input-judul" class="block text-sm font-medium text-gray-700 mb-1">Judul Buku:</label>
                         <input type="text" name="judul" id="input-judul" class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white" required>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Penulis:</label>
+                        <label for="input-penulis" class="block text-sm font-medium text-gray-700 mb-1">Penulis:</label>
                         <input type="text" name="penulis" id="input-penulis" class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white" required>
                     </div>
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Terbit:</label>
+                        <label for="input-tahun" class="block text-sm font-medium text-gray-700 mb-1">Tahun Terbit:</label>
                         <input type="number" name="tahun_terbit" id="input-tahun" min="1900" max="2026" class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white" required>
                     </div>
 
@@ -80,7 +80,7 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $buku->kategori ?? '-' }} </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $buku->kategori->nama ?? $buku->kategori_id ?? '-' }}</td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
@@ -88,13 +88,19 @@
                                         <a href="{{ route('buku.show', $buku->id) }}" class="text-blue-600 font-semibold">Detail</a>
                                         
                                         @can('kelola-buku')
-                                            <button type="button" onclick="pilihUbah({{ $buku->id }}, '{{ addslashes($buku->kategori->nama ?? $buku->kategori_id) }}', '{{ addslashes($buku->judul) }}', '{{ addslashes($buku->penulis) }}', {{ $buku->tahun_terbit }})" class="text-green-600 font-semibold hover:text-green-900">Ubah</button>
+                                            <button
+                                                type="button"
+                                                onclick="pilihUbah({{ $buku->id }}, @js($buku->kategori->nama ?? $buku->kategori_id ?? ''), @js($buku->judul), @js($buku->penulis), {{ $buku->tahun_terbit }})"
+                                                class="text-green-600 font-semibold hover:text-green-900"
+                                            >
+                                                Ubah
+                                            </button>
                                             
                                             <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus data buku ini?')" class="text-red-600 font-semibold hover:text-red-900">Hapus</button>
-                                        </form>
+                                                <button type="submit" onclick="return confirm('Yakin ingin menghapus data buku ini?')" class="text-red-600 font-semibold hover:text-red-900">Hapus</button>
+                                            </form>
                                         @endcan
 
                                         @role('siswa')
@@ -115,10 +121,9 @@
         </div>
     </div>
 
-    @push('js')
     <script>
-        function pilihUbah(id, kategoriId, judul, penulis, tahunTerbit) {
-            document.getElementById('input-kategori_id').value = kategoriId;
+        function pilihUbah(id, kategoriNama, judul, penulis, tahunTerbit) {
+            document.getElementById('kategori_id').value = kategoriNama;
             document.getElementById('input-judul').value = judul;
             document.getElementById('input-penulis').value = penulis;
             document.getElementById('input-tahun').value = tahunTerbit;
@@ -145,5 +150,4 @@
             document.getElementById('btn-batal').style.display = 'none';
         }
     </script>
-    @endpush
 </x-app-layout>
