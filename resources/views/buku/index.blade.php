@@ -34,8 +34,8 @@
                         </label>
                         <input
                             type="text"
-                            id="kategori"
-                            name="kategori"
+                            id="kategori_id"
+                            name="kategori_id"
                             value="{{ old('kategori', $buku->kategori ?? '') }}"
                             placeholder="Masukkan kategori buku"
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -118,7 +118,7 @@
     @push('js')
     <script>
         function pilihUbah(id, kategoriId, judul, penulis, tahunTerbit) {
-            document.getElementById('input-kategori').value = kategoriId;
+            document.getElementById('input-kategori_id').value = kategoriId;
             document.getElementById('input-judul').value = judul;
             document.getElementById('input-penulis').value = penulis;
             document.getElementById('input-tahun').value = tahunTerbit;
