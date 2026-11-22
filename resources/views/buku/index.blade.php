@@ -29,18 +29,14 @@
                     <div id="method-container"></div>
 
                     <div class="mb-4">
-                        <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">
-                            Kategori:
-                        </label>
-                        <input
-                            type="text"
-                            id="kategori_id"
-                            name="kategori_id"
-                            value="{{ old('kategori_id') }}"
-                            placeholder="Masukkan kategori buku"
-                            class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white"
-                            required
-                        >
+                        <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori:</label>
+                        <select name="kategori_id" id="kategori_id" class="w-full border-gray-300 rounded-md shadow-sm p-2 border bg-white" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="Novel" {{ old('kategori_id') == 'Novel' ? 'selected' : '' }}>Novel</option>
+                            <option value="Bisnis" {{ old('kategori_id') == 'Bisnis' ? 'selected' : '' }}>Bisnis</option>
+                            <option value="Teknologi" {{ old('kategori_id') == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
+                            <option value="Sains" {{ old('kategori_id') == 'Sains' ? 'selected' : '' }}>Sains</option>
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label for="input-judul" class="block text-sm font-medium text-gray-700 mb-1">Judul Buku:</label>
