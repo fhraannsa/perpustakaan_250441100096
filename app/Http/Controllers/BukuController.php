@@ -15,13 +15,13 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $bukus = Buku::all();
+        $bukus = Buku::with('kategori')->latest()->get();
         return view('buku.index', compact('bukus'));
     }
 
     public function indexView()
     {
-        $bukus = Buku::all();
+        $bukus = Buku::with('kategori')->latest()->get();
         return view('buku.index', compact('bukus'));
     }
 

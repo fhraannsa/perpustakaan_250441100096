@@ -13,7 +13,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
+
             @if(session('success'))
                 <div class="bg-green-500 text-white p-4 rounded-md shadow mb-4">
                     {{ session('success') }}
@@ -80,22 +80,22 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($bukus as $buku)
                                 <tr class="hover:bg-green-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $buku->kategori->nama ?? $buku->kategori_id ?? '-' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $buku->kategori?->nama ?? '-' }}</td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $buku->judul }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->penulis }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $buku->tahun_terbit }}</td>
                                     <td class="px-6 py-4 text-center text-sm space-x-2">
                                         <a href="{{ route('buku.show', $buku->id) }}" class="text-blue-600 font-semibold">Detail</a>
-                                        
+
                                         @can('kelola-buku')
                                             <button
                                                 type="button"
-                                                onclick="pilihUbah({{ $buku->id }}, @js($buku->kategori->nama ?? $buku->kategori_id ?? ''), @js($buku->judul), @js($buku->penulis), {{ $buku->tahun_terbit }})"
+                                                onclick="pilihUbah({{ $buku->id }}, @js($buku->kategori?->nama ?? ''), @js($buku->judul), @js($buku->penulis), {{ $buku->tahun_terbit }})"
                                                 class="text-green-600 font-semibold hover:text-green-900"
                                             >
                                                 Ubah
                                             </button>
-                                            
+
                                             <form action="{{ route('buku.destroy', $buku->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
